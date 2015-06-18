@@ -2,24 +2,46 @@
 # -*- coding: utf-8 -*-
 u'''Predict module'''
 
-from utils import ImageBase, Flows, Grid
+from skimage import io
+import numpy as np
+from matplotlib import pyplot as plt
+
+from utils import ImageBase, Grid
 from settings import Settings
 from regist import RegularRegist
 
 def _test():
     moving = ImageBase()
     moving.load_data(r'../TOKYO_AMESH_IMAGE/000/2009/200905290240.gif')
-    flows = Flows(moving.size)
-    vgrid = Grid(moving.size, (4, 4))
-    print vgrid.size
 
     fixed = ImageBase()
     fixed.load_data(r'../TOKYO_AMESH_IMAGE/000/2009/200905290250.gif')
     regist = RegularRegist(moving, fixed)
     regist.run()
-    print regist.optimizer.vgrid.values
-    print regist.fixed.values
-    print regist.optimizer.cost
+    regist.linear_transform()
+    convert_to_RGB(regist.vnext.values)
+
+    #print regist.optimizer.vgrid.values
+    #print regist.fixed.values
+    #print regist.optimizer.cost
+
+def convert_to_RGB(vmatrix):
+    u'''Convert moved image to RGB image'''
+    (nrow, ncol) = vmatrix.shape
+    dt_stone = Settings.DATA_STONE
+    dt_bound = Settings.DATA_BOUNDER
+    bound_num = len(dt_bound)
+    dt_max = Settings.DATA_MAX
+    img = np.zeros((nrow, ncol, 3), dtype=np.uint8)
+    for i in range(nrow):
+        for j in range(ncol):
+            value = vmatrix[i, j] * dt_max
+            idx = 0
+            while idx < bound_num-1 and dt_bound[idx] <= value:
+                idx += 1
+            img[i, j] = dt_stone[idx]
+    io.imshow(img)
+    plt.show()
 
 def test_values_img():
     u'''Test value in images'''

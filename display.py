@@ -14,7 +14,7 @@ DATA_DIR = r'../TOKYO_AMESH_IMAGE/000'
 
 def display(timestr, num_prev = 9, row = 3):
     u'''Display previous images before time string'''
-    u'''Example: display(200905282250)'''
+    u'''Example: display(200905290250)'''
     year = int(timestr[0:4])
     month = int(timestr[4:6])
     day = int(timestr[6:8])
@@ -31,6 +31,7 @@ def display(timestr, num_prev = 9, row = 3):
     show_files = []
     for i in range(num_prev):
         dt = dt - diff
+        print dt
         filename = str(dt.year).zfill(4) + str(dt.month).zfill(2) + \
             str(dt.day).zfill(2) + str(dt.hour).zfill(2) + str(dt.minute).zfill(2) + '.gif'
         folder_dir = os.path.join(DATA_DIR, str(dt.year))
@@ -44,7 +45,7 @@ def display(timestr, num_prev = 9, row = 3):
         for j in range(col):
             # Load images
             file_path = show_files[i*col+j]
-            img_file = io.imread(filepath)
+            img_file = io.imread(file_path)
             
             #image = color.rgb2gray(img_file)
             #fd, hog_image = hog(image, orientations=8, pixels_per_cell=(16, 16), 
@@ -66,4 +67,4 @@ def display(timestr, num_prev = 9, row = 3):
     return True
 
 if __name__ == '__main__':
-    display('200905290240', 4, 2)
+    display('200905290310', 4, 2)
